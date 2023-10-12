@@ -1,3 +1,10 @@
+"""
+Project 1 (Anomaly-based IDS)
+Group : 3
+File_name : train_seq_CNN.py 
+@authors : Eshaan Deshpande, Venkat Anurag Nandigala, Anushka Yadav
+"""
+
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
@@ -8,7 +15,9 @@ from sklearn.metrics import classification_report, confusion_matrix, accuracy_sc
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 
-# Example function to evaluate a binary classification CNN model
+# The function 'evaluate_cnn' is used to evaluate a binary classification
+# Convolution Neural Network model. It calculates accuracy, precision, recall, 
+# f1-score and confusion matrix.
 def evaluate_cnn(truth, predicted):
     true_positives = 0
     true_negatives = 0
@@ -24,52 +33,59 @@ def evaluate_cnn(truth, predicted):
         if predicted[i] == 0 and truth[i] == 1:
             false_negatives += 1
     
-    # Calculate accuracy
+    # Calculates accuracy
     accuracy = (true_positives + true_negatives) / len(y_test)
     
-    # Calculate precision
+    # Calculates precision
     precision = true_positives / (true_positives + false_positives)
     
-    # Calculate recall
+    # Calculates recall
     recall = true_positives / (true_positives + false_negatives)
     
-    # Calculate F1-score
+    # Calculates F1-score
     f1_score = 2 * (precision * recall) / (precision + recall)
 
+    # confusion matrix is created
     cm = (true_positives, true_negatives, false_positives, false_negatives)
     
     return accuracy, precision, recall, f1_score, cm
 
 
 
-# Replace 'your_dataset.csv' with the actual path to your CSV file
+# the dataset is read and loaded from a CSV file to a DataFrame.
 data = pd.read_csv('final_train_data.csv')
 
 # Extract features (X) and labels (y)
-X = data.drop(columns=['class'])  # Drop the 'class_name' column to get features
+# It is split into X feature and y label. To extract the X part the 
+# dataset, 'class' column is dropped so that just the numeric values 
+# are taken.
+# Then the 'class' column is stored in y where '0' denotes normal and 
+# '1' denotes anomaly.
+X = data.drop(columns=['class'])  
 X = X.astype(float)
 y = data['class'].map({'normal': 0, 'anomaly': 1})
 
 
 
 model = Sequential()
+# This is done so tath the input shape matches the number of columns
 model.add(Input(shape=(16, 1)))  # Input shape matches the number of columns
 
-# Add Convolutional Layers
+# Added one dimensional Convolutional Layers
 model.add(Conv1D(32, 3, activation='relu'))
 model.add(MaxPooling1D(2))
 model.add(Conv1D(64, 3, activation='relu'))
 model.add(MaxPooling1D(2))
 
-# Flatten the output from convolutional layers
+# Flattened the output from convolutional layers
 model.add(Flatten())
 
-# Add Dense Layers
+# Added Dense Layers
 model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))  # Dropout for regularization
 model.add(Dense(1, activation='sigmoid'))  # Output layer with 1 neuron and sigmoid activation for binary classification
 
-# Compile the model
+# The model is compiled
 model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
 
 
@@ -81,11 +97,6 @@ X_val, X_test, y_val, y_test = train_test_split(X_temp, y_temp, test_size=0.5, r
 
 # Train the model
 history = model.fit(X_train, y_train, epochs=30, batch_size=16, validation_data=(X_val, y_val))
-
-
-
-# Evaluate
-# Validate the model
 
 y_pred = model.predict(X_val)
 y_pred = (y_pred > 0.5).astype(int)
@@ -108,5 +119,5 @@ print(f"F1-Score: {f1_score:.2f}")
 print("Confusion Matrix ( TP, TN, FP, FN)")
 print(cm)
 
-
+# this part saves the model
 model.save('seq_ids.h5')
