@@ -69,7 +69,7 @@ y = data['class'].map({'normal': 0, 'anomaly': 1})
 
 model = Sequential()
 # This is done so tath the input shape matches the number of columns
-model.add(Input(shape=(16, 1)))  # Input shape matches the number of columns
+model.add(Input(shape=(16, 1))) 
 
 # Added one dimensional Convolutional Layers
 model.add(Conv1D(32, 3, activation='relu'))
