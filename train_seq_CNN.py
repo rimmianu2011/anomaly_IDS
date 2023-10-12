@@ -33,7 +33,7 @@ def evaluate_cnn(truth, predicted):
         if predicted[i] == 0 and truth[i] == 1:
             false_negatives += 1
     
-    # Calculates accuracy
+    # Calculates accuracy 
     accuracy = (true_positives + true_negatives) / len(y_test)
     
     # Calculates precision
@@ -119,5 +119,5 @@ print(f"F1-Score: {f1_score:.2f}")
 print("Confusion Matrix ( TP, TN, FP, FN)")
 print(cm)
 
-# this part saves the model
+# this part saves the model in a file called seq_ids.h5
 model.save('seq_ids.h5')
