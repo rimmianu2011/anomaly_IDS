@@ -77,9 +77,6 @@ normalized_df = pd.concat([class_column, normalized_numeric_columns], axis=1)
 # The normalized dataset is then saved to a new file named 'final_train_data.csv'.
 normalized_df.to_csv('final_train_data.csv', index=False)
 
-# Save the new DataFrame to a different dataset (e.g., 'selected_data.csv')
-#new_df.to_csv('final_train_data.csv', index=False)
-
 plt.figure(figsize=(17, 17))
 sns.heatmap(correlation_matrix, annot=False, cmap='coolwarm', linewidths=0.5)
 
